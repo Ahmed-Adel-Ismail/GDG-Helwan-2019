@@ -11,11 +11,15 @@ import kotlinx.android.synthetic.main.fragment_splash.*
 fun SplashFragment.view(viewStates: BehaviorSubject<ViewState>): Disposable =
     viewStates.observeOn(AndroidSchedulers.mainThread()).subscribeBy {
         when (it) {
-            is OnInitializeStarted -> {
-                progressBar.visibility = View.VISIBLE
-            }
-            is OnInitializeFinished -> {
-                progressBar.visibility = View.GONE
-            }
+            is OnInitializeStarted -> showProgress()
+            is OnInitializeFinished -> hideProgressAndNavigate()
         }
     }
+
+private fun SplashFragment.hideProgressAndNavigate() {
+    progressBar.visibility = View.GONE
+}
+
+private fun SplashFragment.showProgress() {
+    progressBar.visibility = View.VISIBLE
+}
