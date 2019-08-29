@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".features.login.LoginActivity"></activity>
+
         <activity
             android:name=".features.splash.SplashActivity"
             android:screenOrientation="locked">
@@ -22,6 +22,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".features.login.LoginActivity"
+            android:screenOrientation="locked" />
+
+        <activity
+            android:name=".features.registration.RegistrationActivity"
+            android:screenOrientation="locked" />
+
+        <activity
+            android:name=".features.home.HomeActivity"
+            android:screenOrientation="locked" />
     </application>
 
 </manifest>

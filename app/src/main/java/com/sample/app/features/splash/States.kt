@@ -7,4 +7,4 @@ object Initialize : Intents()
 
 sealed class ViewState
 object OnInitializeStarted : ViewState()
-object OnInitializeFinished : ViewState()
+class OnInitializeFinished(val loggedInUser: Boolean) : ViewState()

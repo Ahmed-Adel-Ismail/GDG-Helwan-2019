@@ -13,7 +13,9 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_splash)
+
         supportFragmentManager.takeIf { savedInstanceState == null }
             ?.beginTransaction()
             ?.replace(R.id.container, SplashFragment())
