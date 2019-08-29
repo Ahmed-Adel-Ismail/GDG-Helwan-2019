@@ -1,30 +1,35 @@
+@file:SuppressLint("CheckResult")
+
 package com.sample.app.features.splash
 
 import android.annotation.SuppressLint
 import com.sample.domain.usecases.isLoggedInUser
 import io.reactivex.Observable
+import io.reactivex.Scheduler
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import java.util.concurrent.TimeUnit
 
 
-@SuppressLint("CheckResult")
-fun model(intents: BehaviorSubject<Intents>): BehaviorSubject<ViewState> {
+fun model(
+    intents: BehaviorSubject<Intents>,
+    scheduler: Scheduler = Schedulers.io()
+): BehaviorSubject<ViewState> {
 
     val viewStates = BehaviorSubject.create<ViewState>()
 
-    intents.observeOn(Schedulers.io()).subscribeBy {
+    intents.observeOn(scheduler).subscribeBy {
 
         when (it) {
             is Initialize -> waitThenFinishInitialization(viewStates)
         }
 
     }
+
     return viewStates
 }
 
-@SuppressLint("CheckResult")
 private fun waitThenFinishInitialization(viewStates: BehaviorSubject<ViewState>) {
 
     viewStates.onNext(OnInitializeStarted)

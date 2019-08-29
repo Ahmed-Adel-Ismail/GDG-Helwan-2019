@@ -37,7 +37,6 @@ fun requestRegister(
         ?: Single.just(AuthenticationResponse(false, null, "invalid username or password"))
 }
 
-
 fun isLoggedInUser(repository: AuthenticationRepository = authenticationRepository): Single<Boolean> {
     return repository.hasSavedToken()
 }
