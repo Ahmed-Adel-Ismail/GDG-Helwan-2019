@@ -15,7 +15,7 @@ import kotlinx.coroutines.supervisorScope
 
 class Model(
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-    private val bufferCapacity: Int = 0,
+    private val bufferCapacity: Int = 1,
     private val loginUseCase: suspend (String?, String?) -> AuthenticationResponse = loginRequest,
     private val registerUseCase: suspend (String?, String?) -> AuthenticationResponse = registerRequest
 ) {

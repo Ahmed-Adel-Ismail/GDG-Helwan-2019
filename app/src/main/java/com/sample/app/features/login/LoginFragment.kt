@@ -10,6 +10,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 class LoginFragment : Fragment(), CoroutineScope {
@@ -17,11 +19,13 @@ class LoginFragment : Fragment(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = SupervisorJob() + Dispatchers.Main
 
-    val intents by lazy { Channel<Intents>() }
+    val intents by lazy { Channel<Intents>(1) }
+    val model by lazy { Model() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
+
     }
 
     override fun onCreateView(
@@ -34,5 +38,9 @@ class LoginFragment : Fragment(), CoroutineScope {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        launch(Dispatchers.Main) {
+            intents.send(Initialize)
+            view(model(intents))
+        }
     }
 }
