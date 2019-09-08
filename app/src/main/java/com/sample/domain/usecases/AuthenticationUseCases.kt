@@ -21,6 +21,7 @@ fun requestLogin(
     return repository.takeIf { userName.isValidUserCredentials() && password.isValidUserCredentials() }
         ?.requestLogin(UserCredentials(userName!!, password!!))
         ?.flatMap { repository.saveToken(it) }
+        ?.onErrorReturn { AuthenticationResponse(false, null, it.message ?: it.toString()) }
         ?: Single.just(AuthenticationResponse(false, null, "invalid username or password"))
 }
 

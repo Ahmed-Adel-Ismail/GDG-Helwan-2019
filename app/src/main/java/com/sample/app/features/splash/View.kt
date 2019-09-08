@@ -3,7 +3,7 @@ package com.sample.app.features.splash
 import android.content.Intent
 import android.view.View
 import com.sample.app.features.home.HomeActivity
-import com.sample.app.features.registration.RegistrationActivity
+import com.sample.app.features.login.LoginActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
@@ -24,7 +24,7 @@ private fun SplashFragment.hideProgressAndNavigate(loggedInUser: Boolean) {
     progressBar.visibility = View.GONE
 
     if (loggedInUser) startActivity(Intent(context, HomeActivity::class.java))
-    else startActivity(Intent(context, RegistrationActivity::class.java))
+    else startActivity(Intent(context, LoginActivity::class.java))
 
     activity?.finish()
 
