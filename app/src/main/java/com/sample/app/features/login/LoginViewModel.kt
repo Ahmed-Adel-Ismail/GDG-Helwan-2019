@@ -25,7 +25,7 @@ import kotlinx.coroutines.channels.Channel
  * of this [ViewModel] (or Model function)
  *
  */
-class LoginViewModels(
+class LoginViewModel(
     val intents: Channel<Intents> = Channel(1),
     val models: Channel<Model> = Channel(1),
     val coroutineScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO),

@@ -7,14 +7,14 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Test
 
-class LoginViewModelsTest {
+class LoginViewModelTest {
 
     @Test
     fun onInitializeThenReturnProgressDisabled() {
 
         runBlocking {
 
-            with(LoginViewModels()) {
+            with(LoginViewModel()) {
 
                 val result = models.receive()
 
@@ -29,7 +29,7 @@ class LoginViewModelsTest {
     fun onRequestRegisterStartedThenShowProgress() {
         runBlocking {
 
-            with(LoginViewModels(registerUseCase = { _, _ -> AuthenticationResponse(true) })) {
+            with(LoginViewModel(registerUseCase = { _, _ -> AuthenticationResponse(true) })) {
 
                 intents.send(RequestRegister("", ""))
 
@@ -47,7 +47,7 @@ class LoginViewModelsTest {
     fun onRequestRegisterFinishedThenHideProgress() {
         runBlocking {
 
-            with(LoginViewModels(registerUseCase = { _, _ -> AuthenticationResponse(true) })) {
+            with(LoginViewModel(registerUseCase = { _, _ -> AuthenticationResponse(true) })) {
 
                 intents.send(RequestRegister("", ""))
 
@@ -67,7 +67,7 @@ class LoginViewModelsTest {
 
         runBlocking {
 
-            with(LoginViewModels(registerUseCase = { _, _ -> AuthenticationResponse(errorMessage = "ERROR") })) {
+            with(LoginViewModel(registerUseCase = { _, _ -> AuthenticationResponse(errorMessage = "ERROR") })) {
 
                 intents.send(RequestRegister("", ""))
 
@@ -86,7 +86,7 @@ class LoginViewModelsTest {
     fun onRequestLoginStartedThenShowProgress() {
         runBlocking {
 
-            with(LoginViewModels(loginUseCase = { _, _ -> AuthenticationResponse(true) })) {
+            with(LoginViewModel(loginUseCase = { _, _ -> AuthenticationResponse(true) })) {
 
                 intents.send(RequestLogin("", ""))
 
@@ -104,7 +104,7 @@ class LoginViewModelsTest {
     fun onRequestLoginFinishedThenHideProgress() {
         runBlocking {
 
-            with(LoginViewModels(loginUseCase = { _, _ -> AuthenticationResponse(true) })) {
+            with(LoginViewModel(loginUseCase = { _, _ -> AuthenticationResponse(true) })) {
 
                 intents.send(RequestLogin("", ""))
 
@@ -124,7 +124,7 @@ class LoginViewModelsTest {
 
         runBlocking {
 
-            with(LoginViewModels(loginUseCase = { _, _ -> AuthenticationResponse(errorMessage = "ERROR") })) {
+            with(LoginViewModel(loginUseCase = { _, _ -> AuthenticationResponse(errorMessage = "ERROR") })) {
 
                 intents.send(RequestLogin("", ""))
 
@@ -145,7 +145,7 @@ class LoginViewModelsTest {
 
         runBlocking {
 
-            with(LoginViewModels()) {
+            with(LoginViewModel()) {
 
                 onCleared()
 
@@ -161,7 +161,7 @@ class LoginViewModelsTest {
 
         runBlocking {
 
-            with(LoginViewModels()) {
+            with(LoginViewModel()) {
 
                 onCleared()
 
@@ -176,7 +176,7 @@ class LoginViewModelsTest {
 
         runBlocking {
 
-            with(LoginViewModels()) {
+            with(LoginViewModel()) {
 
                 onCleared()
 

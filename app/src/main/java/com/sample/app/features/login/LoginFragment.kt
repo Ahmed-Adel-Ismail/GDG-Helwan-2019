@@ -27,7 +27,7 @@ class LoginFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        with(ViewModelProviders.of(this).get(LoginViewModels::class.java)) {
+        with(ViewModelProviders.of(this).get(LoginViewModel::class.java)) {
 
             lifecycleScope.launch(Dispatchers.Main) {
 
