@@ -10,17 +10,20 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 
 /**
- * for MVI, if this was not for Android development, we would have this class as a function instead of
- * a class, but we use ViewModel because of the rotation problems in Android
+ * for MVI, this is considered the Model function
  *
- * we declare the following :
+ * if this was not for Android development, we would have this class as a function instead ,
+ * but we use ViewModel because of the rotation problems in Android
+ *
+ * we declare the following here as well :
  *
  * Intents Channel : a stream of events to be handled
  *
  * Models Channel : a stream of View Models / Ui states that will be drawn by the UI class
  *
- * and we write the logic that handles the Intents and updates the Ui states in the initialization
- * of this [ViewModel]
+ * and we write the logic that handles the Intents and updates the Ui Models in the initialization
+ * of this [ViewModel] (or Model function)
+ *
  */
 class LoginViewModels(
     val intents: Channel<Intents> = Channel(1),
