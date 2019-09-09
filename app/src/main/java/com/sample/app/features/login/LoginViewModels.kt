@@ -9,10 +9,22 @@ import com.sample.entities.AuthenticationResponse
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 
-
-class Model(
+/**
+ * for MVI, if this was not for Android development, we would have this class as a function instead of
+ * a class, but we use ViewModel because of the rotation problems in Android
+ *
+ * we declare the following :
+ *
+ * Intents Channel : a stream of events to be handled
+ *
+ * Models Channel : a stream of View Models / Ui states that will be drawn by the UI class
+ *
+ * and we write the logic that handles the Intents and updates the Ui states in the initialization
+ * of this [ViewModel]
+ */
+class LoginViewModels(
     val intents: Channel<Intents> = Channel(1),
-    val viewStates: Channel<ViewState> = Channel(1),
+    val models: Channel<Model> = Channel(1),
     val coroutineScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO),
     private val loginUseCase: suspend (String?, String?) -> AuthenticationResponse = loginRequest,
     private val registerUseCase: suspend (String?, String?) -> AuthenticationResponse = registerRequest
@@ -20,7 +32,7 @@ class Model(
 
     init {
         coroutineScope.launch {
-            viewStates.send(ViewState())
+            models.send(Model())
             for (intent in intents) {
                 when (intent) {
                     is RequestLogin -> requestLogin(intent)
@@ -32,22 +44,22 @@ class Model(
 
 
     private suspend fun requestLogin(intent: RequestLogin) {
-        viewStates.send(ViewState(progress = true))
+        models.send(Model(progress = true))
         val response = loginUseCase(intent.userName, intent.password)
-        viewStates.send(ViewState(response.errorMessage, false, response))
+        models.send(Model(response.errorMessage, false, response))
     }
 
 
     private suspend fun requestRegister(intent: RequestRegister) {
-        viewStates.send(ViewState(progress = true))
+        models.send(Model(progress = true))
         val response = registerUseCase(intent.userName, intent.password)
-        viewStates.send(ViewState(response.errorMessage, false, response))
+        models.send(Model(response.errorMessage, false, response))
     }
 
     public override fun onCleared() {
         coroutineScope.cancel()
         intents.cancel()
-        viewStates.cancel()
+        models.cancel()
         super.onCleared()
     }
 }

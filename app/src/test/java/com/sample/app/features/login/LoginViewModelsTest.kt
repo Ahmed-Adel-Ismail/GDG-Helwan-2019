@@ -7,16 +7,16 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Test
 
-class ModelTest {
+class LoginViewModelsTest {
 
     @Test
     fun onInitializeThenReturnProgressDisabled() {
 
         runBlocking {
 
-            with(Model()) {
+            with(LoginViewModels()) {
 
-                val result = viewStates.receive()
+                val result = models.receive()
 
                 assertFalse(result.progress)
 
@@ -29,13 +29,13 @@ class ModelTest {
     fun onRequestRegisterStartedThenShowProgress() {
         runBlocking {
 
-            with(Model(registerUseCase = { _, _ -> AuthenticationResponse(true) })) {
+            with(LoginViewModels(registerUseCase = { _, _ -> AuthenticationResponse(true) })) {
 
                 intents.send(RequestRegister("", ""))
 
                 val results = listOf(
-                    viewStates.receive(),
-                    viewStates.receive()
+                    models.receive(),
+                    models.receive()
                 )
 
                 assertTrue(results[1].progress)
@@ -47,14 +47,14 @@ class ModelTest {
     fun onRequestRegisterFinishedThenHideProgress() {
         runBlocking {
 
-            with(Model(registerUseCase = { _, _ -> AuthenticationResponse(true) })) {
+            with(LoginViewModels(registerUseCase = { _, _ -> AuthenticationResponse(true) })) {
 
                 intents.send(RequestRegister("", ""))
 
                 val results = listOf(
-                    viewStates.receive(),
-                    viewStates.receive(),
-                    viewStates.receive()
+                    models.receive(),
+                    models.receive(),
+                    models.receive()
                 )
 
                 assertFalse(results[2].progress)
@@ -67,14 +67,14 @@ class ModelTest {
 
         runBlocking {
 
-            with(Model(registerUseCase = { _, _ -> AuthenticationResponse(errorMessage = "ERROR") })) {
+            with(LoginViewModels(registerUseCase = { _, _ -> AuthenticationResponse(errorMessage = "ERROR") })) {
 
                 intents.send(RequestRegister("", ""))
 
                 val results = listOf(
-                    viewStates.receive(),
-                    viewStates.receive(),
-                    viewStates.receive()
+                    models.receive(),
+                    models.receive(),
+                    models.receive()
                 )
 
                 assertNotNull(results[2].error)
@@ -86,13 +86,13 @@ class ModelTest {
     fun onRequestLoginStartedThenShowProgress() {
         runBlocking {
 
-            with(Model(loginUseCase = { _, _ -> AuthenticationResponse(true) })) {
+            with(LoginViewModels(loginUseCase = { _, _ -> AuthenticationResponse(true) })) {
 
                 intents.send(RequestLogin("", ""))
 
                 val results = listOf(
-                    viewStates.receive(),
-                    viewStates.receive()
+                    models.receive(),
+                    models.receive()
                 )
 
                 assertTrue(results[1].progress)
@@ -104,14 +104,14 @@ class ModelTest {
     fun onRequestLoginFinishedThenHideProgress() {
         runBlocking {
 
-            with(Model(loginUseCase = { _, _ -> AuthenticationResponse(true) })) {
+            with(LoginViewModels(loginUseCase = { _, _ -> AuthenticationResponse(true) })) {
 
                 intents.send(RequestLogin("", ""))
 
                 val results = listOf(
-                    viewStates.receive(),
-                    viewStates.receive(),
-                    viewStates.receive()
+                    models.receive(),
+                    models.receive(),
+                    models.receive()
                 )
 
                 assertFalse(results[2].progress)
@@ -124,14 +124,14 @@ class ModelTest {
 
         runBlocking {
 
-            with(Model(loginUseCase = { _, _ -> AuthenticationResponse(errorMessage = "ERROR") })) {
+            with(LoginViewModels(loginUseCase = { _, _ -> AuthenticationResponse(errorMessage = "ERROR") })) {
 
                 intents.send(RequestLogin("", ""))
 
                 val results = listOf(
-                    viewStates.receive(),
-                    viewStates.receive(),
-                    viewStates.receive()
+                    models.receive(),
+                    models.receive(),
+                    models.receive()
                 )
 
                 assertNotNull(results[2].error)
@@ -145,7 +145,7 @@ class ModelTest {
 
         runBlocking {
 
-            with(Model()) {
+            with(LoginViewModels()) {
 
                 onCleared()
 
@@ -161,11 +161,11 @@ class ModelTest {
 
         runBlocking {
 
-            with(Model()) {
+            with(LoginViewModels()) {
 
                 onCleared()
 
-                assertTrue(viewStates.isClosedForReceive && viewStates.isClosedForSend)
+                assertTrue(models.isClosedForReceive && models.isClosedForSend)
 
             }
         }
@@ -176,7 +176,7 @@ class ModelTest {
 
         runBlocking {
 
-            with(Model()) {
+            with(LoginViewModels()) {
 
                 onCleared()
 
