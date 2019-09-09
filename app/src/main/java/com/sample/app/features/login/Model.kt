@@ -2,47 +2,54 @@
 
 package com.sample.app.features.login
 
+import androidx.lifecycle.ViewModel
 import com.sample.domain.usecases.requestLogin
 import com.sample.domain.usecases.requestRegister
 import com.sample.entities.AuthenticationResponse
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.ProducerScope
-import kotlinx.coroutines.channels.produce
-import kotlinx.coroutines.supervisorScope
 
 
 class Model(
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-    private val bufferCapacity: Int = 1,
+    val intents: Channel<Intents> = Channel(1),
+    val viewStates: Channel<ViewState> = Channel(1),
+    val coroutineScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO),
     private val loginUseCase: suspend (String?, String?) -> AuthenticationResponse = loginRequest,
     private val registerUseCase: suspend (String?, String?) -> AuthenticationResponse = registerRequest
-) {
+) : ViewModel() {
 
-    suspend operator fun invoke(intents: Channel<Intents>) = supervisorScope {
-        produce<ViewState>(dispatcher, bufferCapacity) {
-            when (val intent = intents.receive()) {
-                is Initialize -> send(ViewState())
-                is RequestLogin -> requestLogin(intent)
-                is RequestRegister -> requestRegister(intent)
+    init {
+        coroutineScope.launch {
+            viewStates.send(ViewState())
+            for (intent in intents) {
+                when (intent) {
+                    is RequestLogin -> requestLogin(intent)
+                    is RequestRegister -> requestRegister(intent)
+                }
             }
         }
     }
 
-    private suspend fun ProducerScope<ViewState>.requestLogin(intent: RequestLogin) {
-        send(ViewState(progress = true))
+
+    private suspend fun requestLogin(intent: RequestLogin) {
+        viewStates.send(ViewState(progress = true))
         val response = loginUseCase(intent.userName, intent.password)
-        send(ViewState(response.errorMessage, false, response))
+        viewStates.send(ViewState(response.errorMessage, false, response))
     }
 
 
-    private suspend fun ProducerScope<ViewState>.requestRegister(intent: RequestRegister) {
-        send(ViewState(progress = true))
+    private suspend fun requestRegister(intent: RequestRegister) {
+        viewStates.send(ViewState(progress = true))
         val response = registerUseCase(intent.userName, intent.password)
-        send(ViewState(response.errorMessage, false, response))
+        viewStates.send(ViewState(response.errorMessage, false, response))
     }
 
+    public override fun onCleared() {
+        coroutineScope.cancel()
+        intents.cancel()
+        viewStates.cancel()
+        super.onCleared()
+    }
 }
 
 private val loginRequest: suspend (String?, String?) -> AuthenticationResponse =

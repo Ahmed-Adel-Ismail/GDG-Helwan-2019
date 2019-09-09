@@ -1,8 +1,8 @@
 package com.sample.app.features.login
 
 import com.sample.entities.AuthenticationResponse
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.toList
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Test
@@ -11,60 +11,55 @@ class ModelTest {
 
     @Test
     fun onInitializeThenReturnProgressDisabled() {
+
         runBlocking {
 
-            val model = Model(bufferCapacity = 1)
-            val intents = Channel<Intents>(1)
+            with(Model()) {
 
-            intents.send(Initialize)
+                val result = viewStates.receive()
 
-            val result = model(intents).poll()
+                assertFalse(result.progress)
 
-            assertFalse(result!!.progress)
-
+            }
         }
+
     }
 
     @Test
     fun onRequestRegisterStartedThenShowProgress() {
-
         runBlocking {
 
-            val intents = Channel<Intents>(1)
-            val model =
-                Model(
-                    bufferCapacity = 2,
-                    registerUseCase = { _, _ -> AuthenticationResponse(true) })
+            with(Model(registerUseCase = { _, _ -> AuthenticationResponse(true) })) {
 
-            intents.send(RequestRegister("", ""))
+                intents.send(RequestRegister("", ""))
 
-            val viewState = model(intents).toList().first()
+                val results = listOf(
+                    viewStates.receive(),
+                    viewStates.receive()
+                )
 
-            assertTrue(viewState.progress)
-
+                assertTrue(results[1].progress)
+            }
         }
-
     }
 
     @Test
     fun onRequestRegisterFinishedThenHideProgress() {
-
         runBlocking {
 
-            val intents = Channel<Intents>(1)
-            val model =
-                Model(
-                    bufferCapacity = 2,
-                    registerUseCase = { _, _ -> AuthenticationResponse(true) })
+            with(Model(registerUseCase = { _, _ -> AuthenticationResponse(true) })) {
 
-            intents.send(RequestRegister("", ""))
+                intents.send(RequestRegister("", ""))
 
-            val viewState = model(intents).toList().last()
+                val results = listOf(
+                    viewStates.receive(),
+                    viewStates.receive(),
+                    viewStates.receive()
+                )
 
-            assertFalse(viewState.progress)
-
+                assertFalse(results[2].progress)
+            }
         }
-
     }
 
     @Test
@@ -72,58 +67,56 @@ class ModelTest {
 
         runBlocking {
 
-            val intents = Channel<Intents>(1)
-            val model = Model(
-                bufferCapacity = 2,
-                registerUseCase = { _, _ -> AuthenticationResponse(errorMessage = "ERROR") }
-            )
+            with(Model(registerUseCase = { _, _ -> AuthenticationResponse(errorMessage = "ERROR") })) {
 
-            intents.send(RequestRegister("", ""))
+                intents.send(RequestRegister("", ""))
 
-            val viewState = model(intents).toList()[1]
+                val results = listOf(
+                    viewStates.receive(),
+                    viewStates.receive(),
+                    viewStates.receive()
+                )
 
-            assertNotNull(viewState.error)
-
+                assertNotNull(results[2].error)
+            }
         }
-
     }
 
     @Test
     fun onRequestLoginStartedThenShowProgress() {
-
         runBlocking {
 
-            val intents = Channel<Intents>(1)
-            val model =
-                Model(bufferCapacity = 2, loginUseCase = { _, _ -> AuthenticationResponse(true) })
+            with(Model(loginUseCase = { _, _ -> AuthenticationResponse(true) })) {
 
-            intents.send(RequestLogin("", ""))
+                intents.send(RequestLogin("", ""))
 
-            val viewState = model(intents).toList().first()
+                val results = listOf(
+                    viewStates.receive(),
+                    viewStates.receive()
+                )
 
-            assertTrue(viewState.progress)
-
+                assertTrue(results[1].progress)
+            }
         }
-
     }
 
     @Test
     fun onRequestLoginFinishedThenHideProgress() {
-
         runBlocking {
 
-            val intents = Channel<Intents>(1)
-            val model =
-                Model(bufferCapacity = 2, loginUseCase = { _, _ -> AuthenticationResponse(true) })
+            with(Model(loginUseCase = { _, _ -> AuthenticationResponse(true) })) {
 
-            intents.send(RequestLogin("", ""))
+                intents.send(RequestLogin("", ""))
 
-            val viewState = model(intents).toList().last()
+                val results = listOf(
+                    viewStates.receive(),
+                    viewStates.receive(),
+                    viewStates.receive()
+                )
 
-            assertFalse(viewState.progress)
-
+                assertFalse(results[2].progress)
+            }
         }
-
     }
 
     @Test
@@ -131,21 +124,66 @@ class ModelTest {
 
         runBlocking {
 
-            val intents = Channel<Intents>(1)
-            val model = Model(
-                bufferCapacity = 2,
-                loginUseCase = { _, _ -> AuthenticationResponse(errorMessage = "ERROR") }
-            )
+            with(Model(loginUseCase = { _, _ -> AuthenticationResponse(errorMessage = "ERROR") })) {
 
-            intents.send(RequestLogin("", ""))
+                intents.send(RequestLogin("", ""))
 
-            val viewState = model(intents).toList().last()
+                val results = listOf(
+                    viewStates.receive(),
+                    viewStates.receive(),
+                    viewStates.receive()
+                )
 
-            assertNotNull(viewState.error)
-
+                assertNotNull(results[2].error)
+            }
         }
-
     }
 
+    @ExperimentalCoroutinesApi
+    @Test
+    fun onClearedThenCancelIntentsChannel() {
+
+        runBlocking {
+
+            with(Model()) {
+
+                onCleared()
+
+                assertTrue(intents.isClosedForReceive && intents.isClosedForSend)
+
+            }
+        }
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun onClearedThenCancelViewStatesChannel() {
+
+        runBlocking {
+
+            with(Model()) {
+
+                onCleared()
+
+                assertTrue(viewStates.isClosedForReceive && viewStates.isClosedForSend)
+
+            }
+        }
+    }
+
+    @Test
+    fun onClearedThenCancelCoroutineScope() {
+
+        runBlocking {
+
+            with(Model()) {
+
+                onCleared()
+
+                assertFalse(coroutineScope.isActive)
+
+            }
+        }
+    }
 
 }
