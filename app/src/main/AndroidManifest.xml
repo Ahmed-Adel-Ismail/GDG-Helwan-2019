@@ -28,10 +28,6 @@
             android:screenOrientation="locked" />
 
         <activity
-            android:name=".features.registration.RegistrationActivity"
-            android:screenOrientation="locked" />
-
-        <activity
             android:name=".features.home.HomeActivity"
             android:screenOrientation="locked" />
     </application>
