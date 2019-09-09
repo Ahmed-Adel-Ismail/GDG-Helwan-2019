@@ -1,5 +1,6 @@
 package com.sample.app.features.login
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import com.sample.app.R
+import com.sample.app.features.home.HomeActivity
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -33,59 +35,59 @@ class LoginFragment : Fragment() {
     }
 
     private suspend fun view(model: Model) {
-
         for (viewState in model.viewStates) {
-
-            if (viewState.progress) showLoadingUi() else showResumedUi(model.intents)
-
-            errorTextView.text = viewState.error ?: ""
-
-            viewState.authenticationResponse
-                ?.takeIf { it.success }
-                ?.also { /* navigate to next screen */ }
+            updateProgress(viewState)
+            updateLoginButton(viewState, model.intents)
+            updateRegisterButton(viewState, model.intents)
+            updateErrorTextView(viewState)
+            updateNavigation(viewState)
         }
-
     }
 
-    private fun showLoadingUi() {
-        progressBar.visibility = View.VISIBLE
-        loginButton.setOnClickListener(null)
-        registerButton.setOnClickListener(null)
+    private fun updateNavigation(viewState: ViewState) {
+        viewState.authenticationResponse
+            ?.takeIf { it.success }
+            ?.also {
+                startActivity(Intent(context, HomeActivity::class.java))
+                activity?.finish()
+            }
     }
 
-    private fun showResumedUi(intents: Channel<Intents>) {
+    private fun updateErrorTextView(viewState: ViewState) {
+        errorTextView.text = viewState.error ?: ""
+    }
 
-        progressBar.visibility = View.GONE
 
-        loginButton.setOnClickListener {
+    private fun updateProgress(viewState: ViewState) {
+        progressBar.visibility = if (viewState.progress) View.VISIBLE else View.GONE
+    }
+
+    private fun updateLoginButton(viewState: ViewState, intents: Channel<Intents>) {
+        if (viewState.progress) loginButton.setOnClickListener(null)
+        else loginButton.setOnClickListener {
             lifecycleScope.launch {
-                notifyRequestLogin(intents)
+                intents.send(
+                    RequestLogin(
+                        "${userNameEditText.text}",
+                        "${passwordEditText.text}"
+                    )
+                )
             }
         }
+    }
 
-        registerButton.setOnClickListener {
+    private fun updateRegisterButton(viewState: ViewState, intents: Channel<Intents>) {
+        if (viewState.progress) registerButton.setOnClickListener(null)
+        else registerButton.setOnClickListener {
             lifecycleScope.launch {
-                notifyRequestRegister(intents)
+                intents.send(
+                    RequestRegister(
+                        "${userNameEditText.text}",
+                        "${passwordEditText.text}"
+                    )
+                )
             }
         }
-    }
-
-    private suspend fun notifyRequestRegister(intents: Channel<Intents>) {
-        intents.send(
-            RequestRegister(
-                "${userNameEditText.text}",
-                "${passwordEditText.text}"
-            )
-        )
-    }
-
-    private suspend fun notifyRequestLogin(intents: Channel<Intents>) {
-        intents.send(
-            RequestLogin(
-                "${userNameEditText.text}",
-                "${passwordEditText.text}"
-            )
-        )
     }
 
 
