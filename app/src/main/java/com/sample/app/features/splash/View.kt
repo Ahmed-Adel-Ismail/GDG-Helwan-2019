@@ -3,7 +3,7 @@ package com.sample.app.features.splash
 import android.content.Intent
 import android.view.View
 import com.sample.app.features.home.HomeActivity
-import com.sample.app.features.login.LoginActivity
+import com.sample.app.features.login_v2.LoginActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy

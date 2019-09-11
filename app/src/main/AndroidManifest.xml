@@ -30,6 +30,10 @@
         <activity
             android:name=".features.home.HomeActivity"
             android:screenOrientation="locked" />
+
+        <activity
+            android:name=".features.login_v2.LoginActivity"
+            android:screenOrientation="locked" />
     </application>
 
 </manifest>
