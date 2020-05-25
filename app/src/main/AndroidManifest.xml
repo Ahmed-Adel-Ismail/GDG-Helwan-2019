@@ -12,7 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".features.login.LoginActivity"></activity>
         <activity
             android:name=".features.splash.SplashActivity"
             android:screenOrientation="locked">

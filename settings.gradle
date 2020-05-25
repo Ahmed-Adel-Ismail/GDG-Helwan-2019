@@ -1,2 +1,4 @@
 include ':app'
 rootProject.name='SampleApp'
+include ':core'
+include ':gateways'
