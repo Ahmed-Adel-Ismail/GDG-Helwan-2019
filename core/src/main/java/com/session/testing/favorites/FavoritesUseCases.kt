@@ -12,16 +12,21 @@ fun showAllFavorites(
 ): Movies {
     return favoritesGateway.loadAllFavorites()
         ?.map { it.movieId }
-        ?.let { favoritesIds ->
-            moviesGateway.loadAllMovies()?.filter { favoritesIds.contains(it.id) }
-        }
+        ?.let { toMoviesWithSameIds(it, moviesGateway) }
         ?: listOf()
 }
 
+private fun toMoviesWithSameIds(favoritesIds: List<Long?>, gateway: MoviesGateway) =
+    gateway.loadAllMovies()?.filter { favoritesIds.contains(it.id) }
+
 fun markAsFavorite(movie: Movie, gateway: FavoritesGateway = FavoritesGateway) {
-    gateway.addToFavorites(Favorite(movie.id))
+    gateway.loadAllFavorites()
+        ?.none { it.movieId == movie.id }
+        ?.run { gateway.addToFavorites(Favorite(movie.id)) }
 }
 
 fun markAsNotFavorite(movie: Movie, gateway: FavoritesGateway = FavoritesGateway) {
-    gateway.removeFromFavorites(Favorite(movie.id))
+    gateway.loadAllFavorites()
+        ?.any { it.movieId == movie.id }
+        ?.run { gateway.removeFromFavorites(Favorite(movie.id)) }
 }

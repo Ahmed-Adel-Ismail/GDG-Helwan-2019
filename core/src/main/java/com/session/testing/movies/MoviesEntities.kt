@@ -14,7 +14,7 @@ data class Movie(
 
 interface MoviesGateway {
     @Throws(FailedToRequestException::class)
-    suspend fun requestAllMovies() : Movies
-    fun saveAllMovies(movies: Movies)
-    fun loadAllMovies() : Movies?
+    suspend fun requestAllMovies(): Movies = throw FailedToRequestException()
+    fun saveAllMovies(movies: Movies) {}
+    fun loadAllMovies(): Movies? = null
 }

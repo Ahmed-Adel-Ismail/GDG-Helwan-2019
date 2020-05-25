@@ -9,7 +9,7 @@ data class Favorite(
 ) : Serializable
 
 interface FavoritesGateway {
-    fun loadAllFavorites() : Favorites?
-    fun addToFavorites(favorite: Favorite)
-    fun removeFromFavorites(favorite: Favorite)
+    fun loadAllFavorites(): Favorites? = null
+    fun addToFavorites(favorite: Favorite) {}
+    fun removeFromFavorites(favorite: Favorite) {}
 }
