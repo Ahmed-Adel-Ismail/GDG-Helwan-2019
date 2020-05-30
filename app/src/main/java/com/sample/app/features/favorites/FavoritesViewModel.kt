@@ -8,7 +8,7 @@ import com.session.testing.favorites.showAllFavorites
 import com.session.testing.movies.Movie
 import com.session.testing.movies.Movies
 
-class FragmentsViewModel(
+class FavoritesViewModel(
     val favorites: MutableLiveData<Movies> = MutableLiveData(),
     private val showAllFavoritesUseCase: () -> Movies = { showAllFavorites() },
     private val markAsFavoriteUseCase: (Movie) -> Unit = { markAsFavorite(it)},

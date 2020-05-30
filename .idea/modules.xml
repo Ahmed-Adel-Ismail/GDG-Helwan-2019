@@ -4,6 +4,10 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/GDG-Helwan-2019-SampleApp.iml" filepath="$PROJECT_DIR$/GDG-Helwan-2019-SampleApp.iml" group="SampleApp" />
       <module fileurl="file://$PROJECT_DIR$/app/GDG-Helwan-2019-app.iml" filepath="$PROJECT_DIR$/app/GDG-Helwan-2019-app.iml" group="SampleApp/app" />
+      <module fileurl="file://$PROJECT_DIR$/GDG-Helwan-SampleApp.iml" filepath="$PROJECT_DIR$/GDG-Helwan-SampleApp.iml" group="SampleApp" />
+      <module fileurl="file://$PROJECT_DIR$/app/GDG-Helwan-app.iml" filepath="$PROJECT_DIR$/app/GDG-Helwan-app.iml" group="SampleApp/app" />
+      <module fileurl="file://$PROJECT_DIR$/core/GDG-Helwan-core.iml" filepath="$PROJECT_DIR$/core/GDG-Helwan-core.iml" group="SampleApp/core" />
+      <module fileurl="file://$PROJECT_DIR$/gateways/GDG-Helwan-gateways.iml" filepath="$PROJECT_DIR$/gateways/GDG-Helwan-gateways.iml" group="SampleApp/gateways" />
       <module fileurl="file://$PROJECT_DIR$/SampleApp.iml" filepath="$PROJECT_DIR$/SampleApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/core/core.iml" filepath="$PROJECT_DIR$/core/core.iml" group="SampleApp/core" />
